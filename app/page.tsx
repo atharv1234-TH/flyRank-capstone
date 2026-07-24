@@ -1,68 +1,57 @@
 "use client"
-import { useState } from "react";
+import { useEffect } from 'react';
 
 export default function Home() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [emailError, setEmailError] = useState("");
-  const [passwordError, setPasswordError] = useState("");
+  useEffect(() => {
+    const emailInput = document.getElementById('email') as HTMLInputElement;
+    if(emailInput) emailInput.value = localStorage.getItem('email') || '';
 
-  const handleSubmit = () => {
-    setEmailError("");
-    setPasswordError("");
-    let valid = true;
-
-    if(!email.includes("@")){
-      setEmailError("Valid email required");
-      valid = false;
-    }
-    if(password.length < 8){
-      setPasswordError("Min 8 characters");
-      valid = false;
-    }
-    if(valid){
-      alert("Settings Saved Successfully!");
-      localStorage.setItem("email", email);
-    }
-  }
+    const form = document.getElementById('settingsForm');
+    form?.addEventListener('submit', function(e) {
+      e.preventDefault();
+      let valid = true;
+      document.getElementById('emailError')!.innerText = "";
+      document.getElementById('passwordError')!.innerText = "";
+      
+      const email = (document.getElementById('email') as HTMLInputElement).value;
+      if (!email.includes('@')) { document.getElementById('emailError')!.innerText = "Valid email required"; valid = false; }
+      
+      const password = (document.getElementById('password') as HTMLInputElement).value;
+      if (password.length < 8) { document.getElementById('passwordError')!.innerText = "Min 8 characters"; valid = false; }
+      
+      if(valid) { localStorage.setItem('email', email); alert("Settings Saved Successfully!"); }
+    });
+  }, []);
 
   return (
-    <main className="flex flex-col items-center justify-center min-h-screen bg-gray-50 p-4">
-      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-        <h1 className="text-2xl font-bold text-center mb-6">FlyRank Login</h1>
-        
-        <div className="mb-4">
-          <input 
-            type="email" 
-            value={email}
-            onChange={(e)=>setEmail(e.target.value)} 
-            placeholder="Email" 
-            className="border border-gray-300 p-2 w-full rounded"
-          />
-          <p className="text-red-500 text-sm mt-1">{emailError}</p>
-        </div>
+    <main>
+      <header style={{background: '#1e3a8a', color: 'white', textAlign: 'center', padding: '20px'}}>
+        <h1>Atharva Vats Singh</h1>
+        <p>AI Automation Engineer | FlyRank Impact Project</p>
+      </header>
 
-        <div className="mb-4">
-          <input 
-            type="password" 
-            value={password}
-            onChange={(e)=>setPassword(e.target.value)} 
-            placeholder="Password" 
-            className="border border-gray-300 p-2 w-full rounded"
-          />
-          <p className="text-red-500 text-sm mt-1">{passwordError}</p>
-        </div>
+      <section style={{padding: '20px', textAlign: 'center'}}>
+        <h2>About Me</h2>
+        <p>I build AI Agents and Automate workflows to save time.</p>
+      </section>
 
-        <button 
-          onClick={handleSubmit} 
-          className="bg-blue-600 text-white px-4 py-2 rounded w-full hover:bg-blue-700"
-        >
-          Submit
-        </button>
-      </div>
-      
-      <footer className="bg-[#1e3a8a] text-white text-center p-4 w-full mt-10">
-        <p>©️ 2026 Atharva Vats Singh | FlyRank Impact Project</p>
+      <section style={{padding: '20px', maxWidth: '400px', margin: '40px auto', background: '#f3f4f6', borderRadius: '10px'}}>
+        <h2>Settings</h2>
+        <form id="settingsForm">
+          <label>Email:</label><br/>
+          <input type="email" id="email" required style={{width: '100%', padding: '8px', marginTop: '5px'}}/>
+          <span id="emailError" style={{color:'red', fontSize: '12px'}}></span><br/><br/>
+
+          <label>Password:</label><br/>
+          <input type="password" id="password" required style={{width: '100%', padding: '8px', marginTop: '5px'}}/>
+          <span id="passwordError" style={{color:'red', fontSize: '12px'}}></span><br/><br/>
+
+          <button type="submit" style={{background: '#1e3a8a', color: 'white', padding: '10px', width: '100%', border: 'none', cursor: 'pointer'}}>Save Settings</button>
+        </form>
+      </section>
+
+      <footer style={{background: '#1e3a8a', color: 'white', textAlign: 'center', padding: '15px', marginTop: '40px'}}>
+        <p>© 2026 Atharva Vats Singh | FlyRank Impact Project</p>
       </footer>
     </main>
   )
